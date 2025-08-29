@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Password Awareness Generator — Neon</title>
+  <style>
+    :root{
+      --bg:#0a0b12;         /* deep dark */
+      --panel:#0f1122;      /* card */
+      --accent:#00fff0;     /* neon teal */
+      --accent2:#ff00e6;    /* neon pink */
+      --text:#e7f7ff;       /* light text */
+      --muted:#9fb3c8;      /* muted */
+      --good:#7CFC00;       /* lime */
+      --shadow: 0 0 20px rgba(0,255,240,.35), 0 0 60px rgba(255,0,230,.15);
+      --radius: 20px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(1200px 1200px at 10% -10%, rgba(255,0,230,.06), transparent 50%),
+                  radial-gradient(1000px 800px at 110% 10%, rgba(0,255,240,.08), transparent 40%),
+                  var(--bg);
+      color:var(--text);
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .wrap{width:min(980px,100%);}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)), var(--panel);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(16px, 2.5vw, 28px);
+    }
+    h1{
+      margin:0 0 4px; font-size: clamp(28px, 4.5vw, 42px); font-weight:800; letter-spacing:.5px;
+      text-shadow: 0 0 8px rgba(0,255,240,.65), 0 0 18px rgba(255,0,230,.35);
+    }
+    .sub{color:var(--muted); margin-bottom:18px; font-size: clamp(14px, 2.3vw, 16px)}
+    .grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px}
+    label{font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted)}
+    input{width:100%; margin-top:6px; padding:12px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.12);
+      background:#0b0d1a; color:var(--text); outline:none; transition:border .2s, box-shadow .2s}
+    input:focus{ border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,255,240,.12)}
+    .row{display:flex; gap:12px; flex-wrap:wrap; margin-top:14px}
+    .btn{
+      appearance:none; border:none; cursor:pointer; padding:12px 16px; border-radius:14px; font-weight:700;
+      background: linear-gradient(90deg, var(--accent), var(--accent2)); color:#021216; text-shadow:none;
+      box-shadow: 0 0 14px rgba(0,255,240,.35), 0 0 24px rgba(255,0,230,.25);
+    }
+    .btn.secondary{ background:transparent; color:var(--accent); border:1px solid rgba(0,255,240,.35)}
+    .btn:active{ transform: translateY(1px)}
+    .note{
+      margin-top:12px; font-size:13px; color:var(--muted);
+      border-left:3px solid var(--accent); padding-left:10px
+    }
+    .results{
+      margin-top:18px; background:#090b16; border:1px dashed rgba(0,255,240,.35); border-radius:16px; padding:14px;
+    }
+    .heading{
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap
+    }
+    .heading h2{margin:0; font-size:18px}
+    ol{margin:10px 0 0 20px; columns: 2; column-gap: 28px}
+    @media (max-width:640px){ ol{columns:1} }
+    li{ padding:2px 0 }
+    .badge{ font-size:11px; color:#021216; background:var(--good); padding:4px 8px; border-radius:999px; font-weight:800 }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Neon Password Awareness Generator</h1>
+      <div class="sub">Yeh tool <span style="color:var(--accent)">educational</span> purpose ke liye hai — dikhata hai ki kaise aam details se guessable passwords ban jate hain. Hamesha strong, unique, aur password manager–generated passwords use karein.</div>
+
+      <form id="detailsForm" onsubmit="event.preventDefault(); generate();">
+        <div class="grid">
+          <div>
+            <label>First Name</label>
+            <input id="first" placeholder="e.g., Eisa" />
+          </div>
+          <div>
+            <label>Last Name</label>
+            <input id="last" placeholder="e.g., Khan" />
+          </div>
+          <div>
+            <label>Nickname</label>
+            <input id="nick" placeholder="e.g., Eisu" />
+          </div>
+          <div>
+            <label>Date of Birth</label>
+            <input id="dob" type="date" />
+          </div>
+          <div>
+            <label>Phone</label>
+            <input id="phone" inputmode="numeric" pattern="[0-9]*" placeholder="digits only" />
+          </div>
+          <div>
+            <label>City</label>
+            <input id="city" placeholder="e.g., Mumbai" />
+          </div>
+          <div>
+            <label>Pet Name</label>
+            <input id="pet" placeholder="e.g., Sheru" />
+          </div>
+          <div>
+            <label>Favourite Color</label>
+            <input id="color" placeholder="e.g., Blue" />
+          </div>
+          <div>
+            <label>Favourite Team</label>
+            <input id="team" placeholder="e.g., India" />
+          </div>
+          <div>
+            <label>Lucky Number</label>
+            <input id="lucky" inputmode="numeric" pattern="[0-9]*" placeholder="e.g., 7" />
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn" type="submit">Generate 50 Passwords</button>
+          <button class="btn secondary" type="button" onclick="clearAll()">Clear</button>
+        </div>
+      </form>
+
+      <p class="note">⚠️ <strong>Security Tip:</strong> In passwords <em>kabhi bhi</em> personal info, repeated patterns (123, 1111), ya easily guessable words mat rakhiye. Har site/app ke liye unique, lamba (16+ chars) password banaayein.</p>
+
+      <div id="out" class="results" hidden>
+        <div class="heading">
+          <h2>Likely-to-be-guessed Passwords (50)</h2>
+          <div class="row">
+            <button class="btn secondary" onclick="copyAll()" type="button">Copy</button>
+            <button class="btn" onclick="downloadFile()" type="button">Download pass.txt</button>
+          </div>
+        </div>
+        <ol id="list"></ol>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const id = x => document.getElementById(x);
+
+    function sanitize(s){
+      return (s || "").toString().normalize("NFKD").replace(/[^a-zA-Z0-9]/g, "");
+    }
+    function onlyDigits(s){ return (s||"").replace(/\D/g, ""); }
+    function cap1(s){ if(!s) return ""; return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase(); }
+
+    function getPieces(){
+      const first = sanitize(id('first').value);
+      const last  = sanitize(id('last').value);
+      const nick  = sanitize(id('nick').value);
+      const city  = sanitize(id('city').value);
+      const pet   = sanitize(id('pet').value);
+      const color = sanitize(id('color').value);
+      const team  = sanitize(id('team').value);
+      const lucky = onlyDigits(id('lucky').value);
+      const phone = onlyDigits(id('phone').value);
+      const dob   = id('dob').value; // YYYY-MM-DD
+
+      let year = "" , yy = "" , md = "";
+      if(dob){
+        const [Y,M,D] = dob.split('-');
+        year = Y; yy = Y?.slice(-2) || ""; md = (M||"")+(D||"");
+      }
+      const phone4 = phone.slice(-4);
+
+      // base tokens from inputs
+      const tokens = [first,last,nick,city,pet,color,team].filter(Boolean);
+      const lowers = tokens.map(t=>t.toLowerCase());
+      const caps   = tokens.map(t=>cap1(t));
+      const uppers = tokens.map(t=>t.toUpperCase());
+
+      const nums = [lucky, year, yy, md, phone4, '123', '1234', '786', '007', '111', '2024', '2025'].filter(Boolean);
+
+      return {first,last,nick,city,pet,color,team,lucky,phone,year,yy,md,phone4, tokens, lowers, caps, uppers, nums};
+    }
+
+    function combos(){
+      const p = getPieces();
+      const set = new Set();
+      const push = v => { if(v && /^[A-Za-z0-9]+$/.test(v)) set.add(v); };
+
+      const addTokenForms = (t)=>{
+        push(t.toLowerCase());
+        push(cap1(t));
+        push(t.toUpperCase());
+      };
+
+      // singles
+      p.tokens.forEach(addTokenForms);
+
+      // initials and joins
+      const initials = (p.first? p.first[0] : '') + (p.last? p.last[0] : '');
+      if(initials) {
+        push(initials.toLowerCase());
+        if(p.year) push(initials.toLowerCase()+p.year);
+        if(p.yy) push(initials.toLowerCase()+p.yy);
+      }
+
+      // name combos
+      if(p.first && p.last){
+        const fl = p.first + p.last;
+        const lf = p.last + p.first;
+        [fl, lf].forEach(addTokenForms);
+      }
+
+      // token + numbers
+      p.tokens.forEach(t=>{
+        p.nums.forEach(n=>{
+          push(t.toLowerCase()+n);
+          push(cap1(t)+n);
+          push(t.toUpperCase()+n);
+        });
+      });
+
+      // numbers + token
+      p.tokens.forEach(t=>{
+        p.nums.forEach(n=>{
+          push(n+t.toLowerCase());
+        });
+      });
+
+      // special patterned guesses (still only alnum)
+      if(p.first) {
+        push(p.first.toLowerCase() + (p.md||''));
+        push(p.first.toLowerCase() + (p.yy||''));
+        push(p.first.toLowerCase() + (p.year||''));
+      }
+      if(p.nick && p.year) push(p.nick.toLowerCase()+p.year);
+      if(p.pet && p.yy)   push(cap1(p.pet)+p.yy);
+      if(p.city && p.phone4) push(p.city.toLowerCase()+p.phone4);
+      if(p.team && p.year) push(p.team.toLowerCase()+p.year);
+      if(p.color && p.lucky) push(p.color.toLowerCase()+p.lucky);
+
+      // ensure exactly 50 by trimming or padding with generic weak ones
+      const weakSeed = [
+        'password', 'iloveyou', 'qwerty', 'welcome', 'admin', 'letmein', 'monkey', 'dragon', 'shadow', 'football',
+        'baseball', 'princess', 'sunshine', 'master', 'login', 'passw0rd', 'superman', 'pokemon', 'naruto', 'cricket'
+      ];
+      weakSeed.forEach(w=>push(w));
+
+      const list = Array.from(set).slice(0,50);
+      while(list.length<50){
+        const w = weakSeed[list.length % weakSeed.length];
+        const n = (p.yy||p.year||'1').toString();
+        const candidate = (w + n).slice(0,20); // keep it tidy
+        if(!set.has(candidate)) { set.add(candidate); list.push(candidate); }
+        else { list.push(w + (list.length+1)); }
+      }
+      return list.slice(0,50);
+    }
+
+    function generate(){
+      const list = combos();
+      const ol = id('list');
+      ol.innerHTML = list.map(x=>`<li><code>${x}</code></li>`).join('');
+      id('out').hidden = false;
+    }
+
+    function clearAll(){
+      document.getElementById('detailsForm').reset();
+      id('out').hidden = true; id('list').innerHTML = '';
+    }
+
+    async function copyAll(){
+      const list = Array.from(document.querySelectorAll('#list li')).map(li=>li.textContent.trim());
+      const text = list.join('\n');
+      try{
+        await navigator.clipboard.writeText(text);
+        toast('Copied 50 passwords to clipboard');
+      }catch(e){ toast('Copy failed — select and copy manually'); }
+    }
+
+    function downloadFile(){
+      const items = Array.from(document.querySelectorAll('#list li')).map(li=>li.textContent.trim());
+      if(items.length===0){ generate(); return downloadFile(); }
+      const blob = new Blob([items.join('\n')], {type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'pass.txt';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    }
+
+    // tiny neon toast for feedback
+    function toast(msg){
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.style.position='fixed'; t.style.bottom='18px'; t.style.left='50%'; t.style.transform='translateX(-50%)';
+      t.style.background='linear-gradient(90deg, var(--accent), var(--accent2))';
+      t.style.color='#021216'; t.style.padding='10px 14px'; t.style.borderRadius='999px'; t.style.fontWeight='800';
+      t.style.boxShadow='var(--shadow)'; t.style.zIndex='9999';
+      document.body.appendChild(t);
+      setTimeout(()=>{ t.style.transition='all .3s'; t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; }, 1200);
+      setTimeout(()=>t.remove(), 1700);
+    }
+  </script>
+</body>
+</html>
